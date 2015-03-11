@@ -47,6 +47,10 @@ class SlaCmd(CkanCommand):
                 log.info("dropping sla table")
                 sla_table.drop()
                 log.info("dropped sla table successfully")
+            if sla_mapping_table.exists():
+                log.info("dropping sla mapping table")
+                sla_mapping_table.drop()
+                log.info("dropped sla mapping table successfully")
             else:
                 log.info("Table sla doesn't exist")
             log.info('End of uninstall command')

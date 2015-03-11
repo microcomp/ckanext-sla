@@ -12,21 +12,23 @@ import uuid
 def make_uuid():
     return unicode(uuid.uuid4())
 
+
 sla_table = Table('sla', metadata,
                         Column('id', types.UnicodeText, primary_key=True, default=make_uuid),
-                        Column('name', types.UnicodeText, default=''),
+                        Column('name', types.UnicodeText, default= u''),
                         Column('level', types.Integer, default=0),
                         Column('rate_rq_s', types.BigInteger, default=0),
                         Column('speed_mb_s', types.Float, default=0),
                         Column('priority', types.Integer, default=0),
                         )
-
+ 
 sla_mapping_table = Table('sla_mapping', metadata,
                             Column('id', types.UnicodeText, primary_key=True, default=make_uuid),
-                            Column('user_id', ForeignKey('user.id')),
-                            Column('sla_id', ForeignKey('sla.id')),
-                            )
-
+                            Column('sla_id',  types.UnicodeText, ForeignKey('sla.id'), nullable=False),
+                            Column('user_id', types.UnicodeText, ForeignKey('user.id'), nullable=False)
+                        )
+    
+ 
 class SLA(domain_object.DomainObject):
     def __init__(self, name, level, rate_rq_s=None, speed_mb_s=None, priority=None):
         assert name
@@ -51,14 +53,14 @@ class SLA(domain_object.DomainObject):
         for i in query:
             Session.delete(i)
         return
-    
+     
 class SLA_Mapping(domain_object.DomainObject):
     def __init__(self, user_id, sla_id):
         assert user_id
         assert sla_id
         self.user_id = user_id
         self.sla_id = sla_id
-        
+         
     @classmethod
     def get(cls, **kw):
         '''Finds a single entity in the register.'''
@@ -74,11 +76,6 @@ class SLA_Mapping(domain_object.DomainObject):
         for i in query:
             Session.delete(i)
         return
-#properties={
-#    "sla" : relationship(Package, single_parent=True, backref=backref('sla', cascade="all, delete, delete-orphan"))
-#    }
+
 mapper(SLA, sla_table)
-mapper(SLA_Mapping, sla_mapping_table, properties={
-    "sla_mapping": relationship(User, backref=backref('sla_mapping', cascade="all, delete, delete-orphan"))#,
-#    "sla_mapping": relationship(SLA, backref=backref('sla_mapping', cascade="all, delete, delete-orphan"))                            )
-})
+mapper(SLA_Mapping, sla_mapping_table)
