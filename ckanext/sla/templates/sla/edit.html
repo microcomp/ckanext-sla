@@ -1,51 +1,43 @@
 {% extends "page.html" %}
-{% import 'macros/form.html' as form %}
-{% block subtitle %}{{ _('CKAN - SLA Management') }}{% endblock %}
+{% block subtitle %}
+	{{ _('CKAN - SLA Management') }}
+{% endblock %}
 {% block breadcrumb_content %}
-<li>{{ _('SLA Administration') }}</li>
-li>{{ _('Edit SLA') }}</li>
+	<li>{{ _('SLA Administration') }}</li>
+	<li>{{ _('SLA list') }}</li>
 {% endblock %}
 {% block primary_content %}
+
 <div class="page-header" style="border-left: 1px solid #d4d4d4;">
 <h1 style="padding-left:1em;" >{{ _('SLA Management') }}</h1>
 </div>
-
-<h3 class="module-heading">{{ _('Add new SLA') }}</h3>
-<form class="dataset-form form-horizontal" method="post" data-module="basic-form">
-  {% block error_summary %}
-    {% if error_summary | count %}
-      <div class="alert alert-error error-explanation">
-        <p>{{ _('The form contains invalid entries:') }}</p>
-        <ul>
-          {% for key, error in error_summary.items() %}
-            <li>{{ key }}: {{ error }}</li>
-          {% endfor %}
-        </ul>
-      </div>
-    {% endif %}
-  {% endblock %}
-
-  {% block fields %}
-    {{ form.input('title', label=_('Title'), id='field-title', placeholder=_('My Related Item'), value="", error="", classes=['control-full']) }}
-    {{ form.input('url', label=_('URL'), id='field-url', placeholder=_('http://example.com/'), value="", error="", classes=['control-full']) }}
-    {{ form.input('image_url', label=_('Image URL'), id='field-image-url', placeholder=_('http://example.com/image.png'), value="", error="", classes=['control-full']) }}
-    {{ form.markdown('description', label=_('Description'), id='field-description', placeholder=_('A little information about the item...'), value="", error="") }}
-    {{ form.select('type', label=_('Type'), id='field-types', selected="", options=c.list, error="") }}
-    
-    {% block package_basic_fields_tags %}
-                  {% set tag_attrs = {'data-module': 'autocomplete', 'data-module-tags': '', 'data-module-source': '/api/2/util/dataset/autocomplete?incomplete=?'} %}
-                  {{ form.input('datasets', id='field-tags', label=_('Datasets'), placeholder=_('eg. default'), value='', error='', classes=['control-full'], attrs=tag_attrs) }}
-                {% endblock %}
-  {% endblock %}
-
-  <div class="form-actions">
-    {% block delete_button %}
-      
-    {% endblock %}
-    {#{ h.nav_link(_('Cancel'), controller='related', action='list', id="", class_='btn') }#}
-    <button class="btn btn-primary" type="submit" name="save">{% block button_text %}{{ _('Save') }}{% endblock %}</button>
-  </div>
-</form>
+<h2>{{ _('Registered SLA') }}</h2>
+<table class="table table-striped table-responsive">
+	<thead>
+      <tr>
+        <th>{{_('SLA name')}}</th>
+        <th>{{_('Number')}}</th>
+        <th>{{_('Requests per second')}}</th>
+        <th>{{_('Speed (MB/s)')}}</th>
+        <th>{{_('Priority')}}</th>
+      </tr>
+    </thead>
+<tbody>
+{% for sla in registered_sla %}
+		<tr>
+		<td>{{sla.name}}</td>
+		<td>{{sla.level}}</td>
+		<td>{{sla.rate_rq_s}}</td>
+		<td>{{sla.speed_mb_s}}</td>
+		<td>{{sla.priority}}</td>
+		<td>{{ h.nav_link(_('Edit'), controller='ckanext.sla.sla:SlaController', action='edit', id=sla.id, class_='btn') }}</td>	
+		</tr>
+{% endfor %}
+ </tbody>
+</table>
+<p>
+{{ h.nav_link(_('Register new SLA'), controller='ckanext.sla.sla:SlaController', action='add', class_='btn btn-primary') }}
+</p>
 {% endblock %}
 {% block secondary_content %}
 {% endblock %}

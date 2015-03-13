@@ -46,6 +46,7 @@ class SLA(domain_object.DomainObject):
     @classmethod
     def getAll(cls, **kw):
         query = Session.query(cls).autoflush(False)
+        query = query.order_by(cls.name).filter(cls.name != '')
         return query.all()
     @classmethod
     def delete(cls, **kw):

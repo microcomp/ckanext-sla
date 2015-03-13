@@ -1,0 +1,36 @@
+{% import 'macros/form.html' as form %}
+
+<form class="dataset-form form-horizontal" method="post" data-module="basic-form">
+  {% block error_summary %}
+    {% if error_summary | count %}
+      <div class="alert alert-error error-explanation">
+        <p>{{ _('The form contains invalid entries:') }}</p>
+        <ul>
+          {% for key, error in error_summary.items() %}
+            <li>{{ key }}: {{ error }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+  {% endblock %}
+
+  {% block fields %}
+    {{ form.input('name', label=_('Name'), id='field-name', placeholder=_('SLA name '), value=data.name, error=errors.name, classes=['control-full']) }}
+    {{ form.input('number', label=_('Number'), id='field-number', placeholder=_('0'), value=data.number, error=errors.number, classes=['control-full']) }}
+    {{ form.input('rqs', label=_('Requests per second'), id='field-rqs', placeholder=_('0'), value=data.rqs, error=errors.rqs, classes=['control-full']) }}
+    {{ form.input('speed', label=_('Speed (MB/s)'), id='field-speed', placeholder=_('0'), value=data.speed, error=errors.speed, classes=['control-full']) }}
+    {{ form.input('priority', label=_('Priority'), id='field-priority', placeholder=_('0'), value=data.priority, error=errors.priority, classes=['control-full']) }}
+  {% endblock %}
+
+  <div class="form-actions">
+    {% block delete_button %}
+    {% if data.id %}
+      {{ h.nav_link(_('Delete'), controller='ckanext.sla.sla:SlaController', action='delete', id=data.id, class_='btn') }}
+    {% endif %}
+    {% endblock %}
+    <button class="btn btn-primary" type="submit" name="save">{% block button_text %}{{ _('Save') }}{% endblock %}</button>
+  </div>
+  {% if data.id %}
+      <input type="hidden" name="id" value={{data.id}}>
+  {% endif %}
+</form>
