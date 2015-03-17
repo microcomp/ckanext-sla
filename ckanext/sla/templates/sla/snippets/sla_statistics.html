@@ -1,0 +1,6 @@
+<h3> Statistics</h3>
+{% for sla in statistics %}
+    <p>
+    {{ sla['name'] }} : {{sla['count']}}
+    </p>
+{% endfor %}

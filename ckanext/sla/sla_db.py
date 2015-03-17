@@ -1,5 +1,5 @@
 from sqlalchemy.sql.expression import or_
-from sqlalchemy import types, Column, Table, ForeignKey
+from sqlalchemy import types, Column, Table, ForeignKey, func
 import vdm.sqlalchemy
 import types as _types
 from ckan.model import domain_object
@@ -77,6 +77,21 @@ class SLA_Mapping(domain_object.DomainObject):
         for i in query:
             Session.delete(i)
         return
+    
+    @classmethod
+    def getAllDetails(cls, **kw):
+        query = Session.query(User, SLA).autoflush(False)
+        query = query.join(cls, User.id==cls.user_id)
+        query = query.join(SLA, SLA.id==cls.sla_id)
+        return query.all()
+    
+    @classmethod
+    def getCountUserPerSLA(cls, **kw):
+        query = Session.query(cls.sla_id, SLA.name, func.count(cls.user_id)).autoflush(False)
+        query = query.join(SLA, SLA.id==cls.sla_id)
+        query = query.group_by(cls.sla_id, SLA.name)
+        return query.all()
+    
 
 mapper(SLA, sla_table)
 mapper(SLA_Mapping, sla_mapping_table)

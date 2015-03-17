@@ -10,10 +10,13 @@
 
 <h3 style="font-size: 1.3em;"> <a href="{{ h.url_for(controller='ckanext.sla.sla:SlaController', action='manage') }}"> <i class="fa fa-external-link" ></i> {{_('Edit SLA')}} </a></h3>
 
-{% set users, user_name = h.get_users(data) %}
-{% for user in users %}
-	<h3><a href="{{ h.url_for(controller='user', action='read', id=user['name']) }}">{{ user['name'] }}</a></h3>
+{% for res in results %}
+	<h3><a href="{{ h.url_for(controller='user', action='read', id=res['user_id']) }}">{{ res['user_name'] }}</a></h3>
+    <p>
+    {{ res['sla_name'] }}
+    </p>
 {% endfor %}
 {% endblock %}
 {% block secondary_content %}
+{% snippet 'sla/snippets/sla_statistics.html', statistics=statistics %}
 {% endblock %}

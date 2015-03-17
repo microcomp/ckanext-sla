@@ -12,16 +12,94 @@ log = logging.getLogger('ckanext')
 
 class SlaController(base.BaseController):
     def list(self):
-        return base.render('sla/index.html')
+        statistics = SLA_Mapping.getCountUserPerSLA()
+        table_stat = []
+        for entry in statistics:
+            sla_name = entry[1]
+            count = entry[2]
+            data_dict = {'name' : sla_name,
+                         'count' : count}
+            table_stat.append(data_dict)
+        table_results = []
+        users = tk.get_action('user_list')(data_dict={})
+        entries = SLA_Mapping.getAllDetails()
+        for entry in entries:
+            user = entry[0]
+            sla = entry[1]
+            data_dict = {'user_id' : user.id,
+                         'user_name' : user.name,
+                         'sla_id' : sla.id,
+                         'sla_name' : sla.name}
+            table_results.append(data_dict)
+        return base.render('sla/index.html', extra_vars = {'results' : table_results,
+                                                           'statistics' : table_stat})
      
     def manage(self):
         data = request.POST
         log.info('request post data : %s', data.keys())
         registered_sla = SLA.getAll()
         log.info('registered sla: %s', registered_sla)
-        return base.render('sla/edit.html', extra_vars={'data' : data,
-                                                        'registered_sla' : registered_sla})
-    
+        return base.render('sla/edit.html', extra_vars={'data' : data, 'registered_sla' : registered_sla})
+
+    def map_user_sla(self):
+        data = request.POST
+        if 'save' in data.keys():
+            log.info('received data: %s', data)
+            user_id = data['user']
+            sla_id = data['sla']
+            errors = self._validate_mapping_data(data)
+            if errors:
+                users = tk.get_action('user_list')(data_dict={})
+                not_defined = {'value' : 'not_defined', 'text' : _('Not defined')}
+                users_var = []
+                users_var.append(not_defined)
+                for user in users:
+                    users_var.append({'value' : user['id'], 'text' : user['name']})
+                registered_sla = SLA.getAll()
+                sla_var = []
+                sla_var.append(not_defined)
+                for sla in registered_sla:
+                    sla_var.append({'value' : sla.id, 'text' : sla.name})
+                return base.render('sla/assign_sla.html', extra_vars={'users' : users_var,
+                                                                      'sla' : sla_var,
+                                                                      'errors' : errors,
+                                                                      'data' : data})
+            else:
+                user_detail = tk.get_action('user_show')(data_dict={'id' : user_id})
+                self._add_mapping(user_id, user_detail['name'], sla_id)
+                return self.list()
+        users = tk.get_action('user_list')(data_dict={})
+        not_defined = {'value' : 'not_defined', 'text' : _('Not defined')}
+        users_var = []
+        users_var.append(not_defined)
+        for user in users:
+            users_var.append({'value' : user['id'], 'text' : user['name']})
+        registered_sla = SLA.getAll()
+        sla_var = []
+        sla_var.append(not_defined)
+        for sla in registered_sla:
+            sla_var.append({'value' : sla.id, 'text' : sla.name})
+        return base.render('sla/assign_sla.html', extra_vars={'users' : users_var,
+                                                              'sla' : sla_var,
+                                                              'errors' : None,
+                                                              'data' : None})
+        
+    def _validate_mapping_data(self, data_dict):
+        errors = {}
+        if data_dict['user']=='not_defined':
+            errors['user'] = ('Please select a user.',)
+        if data_dict['sla']=='not_defined':
+            errors['sla'] = ('Please select a SLA for user.',)
+        return errors
+            
+        
+    def _add_mapping(self, user_id, user_name, sla_id):
+        log.info('assigning SLA')
+        new_map = SLA_Mapping(user_id, sla_id)
+        new_map.save()
+        message = _("New SLA was assigned to the user {0}")
+        h.flash_success(message.format(user_name))
+        
     def add(self):
         data = request.POST
         if 'save' in data.keys():
