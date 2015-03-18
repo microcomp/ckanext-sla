@@ -11,17 +11,31 @@ import ckan.lib.helpers as h
 log = logging.getLogger('ckanext')
 
 class SlaController(base.BaseController):
+    
+    def delete(self):
+        data = request.GET
+        if 'id' in data.keys():
+            search = {'id' : data['id']}
+            log.info(search)
+            res = SLA.getCountUserPerSLA(**search)
+            log.info('res: %s', res)
+            if len(res)==1:
+               if res[0][1]==0:
+                   sla_table.delete(SLA.id==data['id']).execute()
+                   message = _('SLA {0} was deleted!')
+                   message = message.format(res[0][0].name)
+                   h.flash_success(message)
+                   return self.manage()
+               else:
+                   message = _('You can not delete SLA {0}, because of assigned users to it!')
+                   message = message.format(res[0][0].name)
+                   h.flash_error(message)
+                   return self.manage()
+                   
+            
+    
     def list(self):
-        statistics = SLA_Mapping.getCountUserPerSLA()
-        table_stat = []
-        for entry in statistics:
-            sla_name = entry[1]
-            count = entry[2]
-            data_dict = {'name' : sla_name,
-                         'count' : count}
-            table_stat.append(data_dict)
         table_results = []
-        users = tk.get_action('user_list')(data_dict={})
         entries = SLA_Mapping.getAllDetails()
         for entry in entries:
             user = entry[0]
@@ -31,8 +45,7 @@ class SlaController(base.BaseController):
                          'sla_id' : sla.id,
                          'sla_name' : sla.name}
             table_results.append(data_dict)
-        return base.render('sla/index.html', extra_vars = {'results' : table_results,
-                                                           'statistics' : table_stat})
+        return base.render('sla/index.html', extra_vars = {'results' : table_results})
      
     def manage(self):
         data = request.POST
@@ -49,6 +62,9 @@ class SlaController(base.BaseController):
             sla_id = data['sla']
             errors = self._validate_mapping_data(data)
             if errors:
+                if errors.get('duplicate', None):
+                    h.flash_notice(_('This relationship already exists. Nothing has been changed.'))
+                    return self.list()
                 users = tk.get_action('user_list')(data_dict={})
                 not_defined = {'value' : 'not_defined', 'text' : _('Not defined')}
                 users_var = []
@@ -79,17 +95,34 @@ class SlaController(base.BaseController):
         sla_var.append(not_defined)
         for sla in registered_sla:
             sla_var.append({'value' : sla.id, 'text' : sla.name})
+        data_get = request.GET
+        data = {}
+        if 'user_id' in data_get.keys():
+            data['user'] = data_get['user_id']
+        if 'sla_id' in data_get.keys():
+            data['sla'] = data_get['sla_id']
+        if data.get('user', None) and data.get('sla', None):
+            search = {'user_id' : data_dict['user']}
+            res = SLA_Mapping.get(**search)
         return base.render('sla/assign_sla.html', extra_vars={'users' : users_var,
                                                               'sla' : sla_var,
                                                               'errors' : None,
-                                                              'data' : None})
+                                                              'data' : data})
         
     def _validate_mapping_data(self, data_dict):
         errors = {}
         if data_dict['user']=='not_defined':
-            errors['user'] = ('Please select a user.',)
+            errors['user'] = (_('Please select a user.'),)
         if data_dict['sla']=='not_defined':
-            errors['sla'] = ('Please select a SLA for user.',)
+            errors['sla'] = (_('Please select a SLA for user.'),)
+        if not errors:
+            search = {'user_id' : data_dict['user']}
+            res = SLA_Mapping.get(**search)
+            if res:
+                if res[0].sla_id!=data_dict['sla']:
+                    errors['user'] = (_('This user has already asigned SLA!'),)
+                else:
+                    errors['duplicate'] = 'Dont allow to create duplicates'
         return errors
             
         

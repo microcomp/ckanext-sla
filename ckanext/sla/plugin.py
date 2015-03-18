@@ -1,5 +1,19 @@
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
+from sla_db import SLA
+
+
+def sla_statistics():
+    statistics = SLA.getCountUserPerSLA()
+    table_stat = []
+    for entry in statistics:
+        sla_name = entry[0].name
+        count = entry[1]
+        data_dict = {'name' : sla_name,
+                     'count' : count}
+        table_stat.append(data_dict)
+    return table_stat
+
 
 class SlaPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
@@ -15,7 +29,8 @@ class SlaPlugin(plugins.SingletonPlugin):
         map.connect('sla_edit','/admin/sla/edit', action='edit', controller='ckanext.sla.sla:SlaController')
         map.connect('sla_new','/admin/sla/new', action='add', controller='ckanext.sla.sla:SlaController')
         map.connect('sla_assign','/admin/sla/assign', action='map_user_sla', controller='ckanext.sla.sla:SlaController')
+        map.connect('sla_delete','/admin/sla/delete', action='delete', controller='ckanext.sla.sla:SlaController')
         return map
     
     def get_helpers(self):
-        return {}
+        return {'sla_statistics' : sla_statistics}

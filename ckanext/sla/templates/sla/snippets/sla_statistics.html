@@ -1,6 +1,16 @@
-<h3> Statistics</h3>
-{% for sla in statistics %}
+<h3>{{_('Statistics')}}</h3>
+{% set statistics = h.sla_statistics() %}
+{% if statistics %}
     <p>
-    {{ sla['name'] }} : {{sla['count']}}
+    {{_('The number of users per each SLA:')}}
     </p>
-{% endfor %}
+    {% for sla in statistics %}
+        <p>
+        {{ sla['name'] }} : {{ sla['count'] }}
+        </p>
+    {% endfor %}
+{% else %}
+    <p>
+    {{_('The is currently no data to display.')}}
+    </p>
+{% endif %}

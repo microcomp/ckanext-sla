@@ -8,15 +8,34 @@
 <h1 style="padding-left:1em;" >{{ _('SLA Administration') }}</h1>
 </div>
 
-<h3 style="font-size: 1.3em;"> <a href="{{ h.url_for(controller='ckanext.sla.sla:SlaController', action='manage') }}"> <i class="fa fa-external-link" ></i> {{_('Edit SLA')}} </a></h3>
-
-{% for res in results %}
-	<h3><a href="{{ h.url_for(controller='user', action='read', id=res['user_id']) }}">{{ res['user_name'] }}</a></h3>
+<h3 style="font-size: 1.3em;"> <a href="{{ h.url_for(controller='ckanext.sla.sla:SlaController', action='manage') }}"> <i class="fa fa-external-link" ></i> {{_('Edit SLA definitions')}} </a></h3>
+<h3 style="font-size: 1.3em;"> <a href="{{ h.url_for(controller='ckanext.sla.sla:SlaController', action='map_user_sla') }}"> <i class="fa fa-external-link" ></i> {{_('Assign SLA to users')}} </a></h3>
+{% if results %}
+    <table class="table table-striped table-responsive">
+        <thead>
+          <tr>
+            <th>{{_('User')}}</th>
+            <th>{{_('SLA name')}}</th>
+          </tr>
+        </thead>
+    <tbody>
+    {% for res in results %}
+            <tr>
+            <td><h3><a href="{{ h.url_for(controller='user', action='read', id=res['user_id']) }}">{{ res['user_name'] }}</a></h3></td>
+            <td>{{ res['sla_name'] }}</td>
+            <td><a href="{{ h.url_for(controller='ckanext.sla.sla:SlaController', action='map_user_sla', sla_id=res['sla_id'], user_id=res['user_id'])}}">{{ _('Edit')}}</a></td>
+            </tr>
+    {% endfor %}
+     </tbody>
+    </table>
+{% else %}
     <p>
-    {{ res['sla_name'] }}
+    <h3>
+    {{ _('There is no mapping of SLA to users. All users have default SLA.') }}
+    </h3>
     </p>
-{% endfor %}
+{% endif %}
 {% endblock %}
 {% block secondary_content %}
-{% snippet 'sla/snippets/sla_statistics.html', statistics=statistics %}
+{% snippet 'sla/snippets/sla_statistics.html' %}
 {% endblock %}

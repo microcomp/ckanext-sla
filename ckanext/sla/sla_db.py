@@ -54,6 +54,13 @@ class SLA(domain_object.DomainObject):
         for i in query:
             Session.delete(i)
         return
+    @classmethod
+    def getCountUserPerSLA(cls, **kw):
+        query = Session.query(cls, func.count(SLA_Mapping.user_id)).autoflush(False)
+        query = query.filter_by(**kw)
+        query = query.outerjoin(SLA_Mapping, cls.id==SLA_Mapping.sla_id)
+        query = query.group_by(cls.id, cls.name)
+        return query.all()
      
 class SLA_Mapping(domain_object.DomainObject):
     def __init__(self, user_id, sla_id):
@@ -90,6 +97,7 @@ class SLA_Mapping(domain_object.DomainObject):
         query = Session.query(cls.sla_id, SLA.name, func.count(cls.user_id)).autoflush(False)
         query = query.join(SLA, SLA.id==cls.sla_id)
         query = query.group_by(cls.sla_id, SLA.name)
+        query = query.filter_by(**kw)
         return query.all()
     
 
