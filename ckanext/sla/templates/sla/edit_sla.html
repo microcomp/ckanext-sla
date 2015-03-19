@@ -1,9 +1,7 @@
-{% extends "page.html" %}
-{% block subtitle %}
-	{{ _('CKAN - SLA Management') }}
-{% endblock %}
+{% extends "/sla/base_sla.html" %}
 {% block breadcrumb_content %}
-	<li>{{ _('SLA Administration') }}</li>
+	{{ super ()}}
+	<li><a href="{{ h.url_for(controller='ckanext.sla.sla:SlaController', action='manage') }}">{{ _('SLA definitions') }}</a></li>
 	<li>{{ _('Edit SLA') }}</li>
 {% endblock %}
 {% block primary_content %}
@@ -13,7 +11,4 @@
 </div>
 <h2>{{ _('Update SLA') }}</h2>
 {% snippet 'sla/snippets/sla_form.html', data=data, errors=errors %}
-{% endblock %}
-{% block secondary_content %}
-{% snippet 'sla/snippets/sla_statistics.html' %}
 {% endblock %}

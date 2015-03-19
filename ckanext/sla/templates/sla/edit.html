@@ -1,15 +1,12 @@
-{% extends "page.html" %}
-{% block subtitle %}
-	{{ _('CKAN - SLA Management') }}
-{% endblock %}
+{% extends "/sla/base_sla.html" %}
 {% block breadcrumb_content %}
-	<li>{{ _('SLA Administration') }}</li>
-	<li>{{ _('SLA list') }}</li>
+	{{ super() }}
+	<li>{{ _('SLA definitions') }}</li>
 {% endblock %}
 {% block primary_content %}
 
 <div class="page-header" style="border-left: 1px solid #d4d4d4;">
-<h1 style="padding-left:1em;" >{{ _('SLA Management') }}</h1>
+<h1 style="padding-left:1em;" >{{ _('SLA definitions') }}</h1>
 </div>
 <h2>{{ _('Registered SLA') }}</h2>
 <table class="table table-striped table-responsive">
@@ -38,7 +35,4 @@
 <p>
 {{ h.nav_link(_('Register new SLA'), controller='ckanext.sla.sla:SlaController', action='add', class_='btn btn-primary') }}
 </p>
-{% endblock %}
-{% block secondary_content %}
-{% snippet 'sla/snippets/sla_statistics.html' %}
 {% endblock %}

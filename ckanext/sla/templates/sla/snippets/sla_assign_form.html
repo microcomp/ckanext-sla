@@ -15,12 +15,28 @@
   {% endblock %}
 
   {% block fields %}
+  {% if data.rel_id %}
+  	<p>
+  	<h3>
+  	{{ _('Select appropriate SLA for user ')}}
+  	{{ data.user_name }} :
+  	</h3>
+  	</p>
+  {% else %}
      {{ form.select('user', label=_('User'), id='field-user', selected=data.user, options=users, error=errors.user) }}
+  {% endif %}
      {{ form.select('sla', label=_('SLA'), id='field-sla', selected=data.sla, options=sla, error=errors.sla) }}
   {% endblock %}
   <div class="form-actions">
     {% block delete_button %}
+    {% if data.rel_id %}
+      {{ h.nav_link(_('Delete'), controller='ckanext.sla.sla:SlaController', action='delete_relationship', id=data.rel_id, class_='btn') }}
+    {% endif %}
     {% endblock %}
     <button class="btn btn-primary" type="submit" name="save">{% block button_text %}{{ _('Assign SLA') }}{% endblock %}</button>
   </div>
+    {% if data.rel_id %}
+      <input type="hidden" name="rel_id" value={{data.rel_id}}>
+      <input type="hidden" name="user" value={{data.user}}>
+  {% endif %}
 </form>

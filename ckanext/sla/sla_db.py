@@ -89,6 +89,7 @@ class SLA_Mapping(domain_object.DomainObject):
     def getAllDetails(cls, **kw):
         query = Session.query(User, SLA).autoflush(False)
         query = query.join(cls, User.id==cls.user_id)
+        query = query.filter_by(**kw)
         query = query.join(SLA, SLA.id==cls.sla_id)
         return query.all()
     
@@ -97,6 +98,13 @@ class SLA_Mapping(domain_object.DomainObject):
         query = Session.query(cls.sla_id, SLA.name, func.count(cls.user_id)).autoflush(False)
         query = query.join(SLA, SLA.id==cls.sla_id)
         query = query.group_by(cls.sla_id, SLA.name)
+        query = query.filter_by(**kw)
+        return query.all()
+    
+    @classmethod
+    def getSLA(cls, **kw):
+        query = Session.query(SLA).autoflush(False)
+        query = query.join(cls, SLA.id==cls.sla_id)
         query = query.filter_by(**kw)
         return query.all()
     

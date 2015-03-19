@@ -1,0 +1,43 @@
+{% extends "/sla/base_sla.html" %}
+{% block breadcrumb_content %}
+	{{ super() }}
+	<li><a href="{{ h.url_for(controller='ckanext.sla.sla:SlaController', action='manage') }}">{{ _('SLA definitions') }}</a></li>
+	<li>{{ _('Detail') }}</li>
+{% endblock %}
+{% block primary_content %}
+<div class="page-header" style="border-left: 1px solid #d4d4d4;">
+<h1 style="padding-left:1em;" >{{ _('SLA detail') }}</h1>
+</div>
+
+{% if data_detail %}
+	<p>
+	{{_('SLA name')}} : {{ data_detail.name }}
+	</p>
+	<p>
+	{{_('SLA number')}} : {{ data_detail.number }}
+	</p>
+	<p>
+	{{_('Requests per second')}} : {{ data_detail.rqs}}
+	</p>
+	<p>
+	{{_('Speed')}} : {{ data_detail.speed}}
+	</p>
+	<p>
+	{{_('Priority')}} : {{ data_detail.priority}}
+	</p>
+	{{ h.nav_link(_('Edit'), controller='ckanext.sla.sla:SlaController', action='edit', id=data_detail.id, class_='btn') }}
+{% endif %}
+{% if data_users %}
+<p>
+<h3>
+{{ _('Following users are assigned to this SLA:') }}
+</h3>
+</p>
+{% for user in data_users %}
+<p>
+<h3><a href="{{ h.url_for(controller='user', action='read', id=user.id) }}">{{ user.name }}</a></h3>
+</p>
+{{ h.nav_link(_('Edit'), controller='ckanext.sla.sla:SlaController', action='map_user_sla', sla_id=data_detail.id, user_id=user.id, class_='btn') }}
+{% endfor %}
+{% endif %}
+{% endblock %}

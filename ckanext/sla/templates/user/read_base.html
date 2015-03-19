@@ -1,0 +1,11 @@
+{% ckan_extends %}
+
+{% block user_info %}
+{{ super() }}
+<div class="info">
+<dl>
+<dt>{{ _('SLA') }}</dt>
+<dd>{{ h.user_sla(user.id) }}</dd>
+</dl>
+</div>
+{% endblock %}
