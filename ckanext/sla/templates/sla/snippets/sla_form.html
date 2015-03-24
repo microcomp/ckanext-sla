@@ -15,19 +15,21 @@
   {% endblock %}
 
   {% block fields %}
-    {{ form.input('name', label=_('Name'), id='field-name', placeholder=_('SLA name '), value=data.name, error=errors.name, classes=['control-full']) }}
-    {{ form.input('number', label=_('Number'), id='field-number', placeholder=_('0'), value=data.number, error=errors.number, classes=['control-full']) }}
-    {{ form.input('rqs', label=_('Requests per second'), id='field-rqs', placeholder=_('0'), value=data.rqs, error=errors.rqs, classes=['control-full']) }}
-    {{ form.input('speed', label=_('Speed (MB/s)'), id='field-speed', placeholder=_('0'), value=data.speed, error=errors.speed, classes=['control-full']) }}
-    {{ form.input('priority', label=_('Priority'), id='field-priority', placeholder=_('0'), value=data.priority, error=errors.priority, classes=['control-full']) }}
+    {{ form.input('name', label=_('Name'), id='field-name', placeholder=_('SLA name '), value=data.name, error=errors.name, classes=['control-full'], is_required=True) }}
+    {{ form.input('number', label=_('Number'), id='field-number', placeholder=_('0'), value=data.number, error=errors.number, classes=['control-full'], is_required=True) }}
+    {{ form.input('rqs', label=_('Requests per second'), id='field-rqs', placeholder=_('0'), value=data.rqs, error=errors.rqs, classes=['control-full'], is_required=True) }}
+    {{ form.input('speed', label=_('Speed (MB/s)'), id='field-speed', placeholder=_('0'), value=data.speed, error=errors.speed, classes=['control-full'], is_required=True) }}
+    {{ form.input('priority', label=_('Priority'), id='field-priority', placeholder=_('0'), value=data.priority, error=errors.priority, classes=['control-full'], is_required=True) }}
   {% endblock %}
 
   <div class="form-actions">
     {% block delete_button %}
     {% if data.id %}
-      {{ h.nav_link(_('Delete'), controller='ckanext.sla.sla:SlaController', action='delete', id=data.id, class_='btn') }}
+      {% set locale = h.dump_json({'content': _('Are you sure you want to delete this SLA?')}) %}
+	  <a class="btn btn-danger pull-left" href="{% url_for controller='ckanext.sla.sla:SlaController', action='delete', id=data.id %}" data-module="confirm-action" data-module-i18n="{{ locale }}">{% block delete_button_text %}{{ _('Delete') }}{% endblock %}</a>
     {% endif %}
     {% endblock %}
+    {{ form.required_message() }}
     <button class="btn btn-primary" type="submit" name="save">{% block button_text %}{{ _('Save') }}{% endblock %}</button>
   </div>
   {% if data.id %}
