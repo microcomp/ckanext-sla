@@ -11,6 +11,14 @@ import ckan.lib.helpers as h
 log = logging.getLogger('ckanext')
 
 class SlaController(base.BaseController):
+    def _check_access(self, user):
+        context = {'user' : user}
+        try:
+            logic.check_access('sla_management', context)
+        except tk.NotAuthorized, e:
+            log.info(e.extra_msg)
+            tk.abort(401, e.extra_msg)
+    
     def sla_detail(self, id):
         search = {'id' : id}
         sla = SLA.get(**search)
@@ -36,6 +44,7 @@ class SlaController(base.BaseController):
                                                                     'data_users' : data_users})
             
     def delete(self):
+        self._check_access(c.user)
         data = request.GET
         if 'id' in data.keys():
             search = {'id' : data['id']}
@@ -56,6 +65,7 @@ class SlaController(base.BaseController):
                     return self.manage()
                 
     def delete_relationship(self):
+        self._check_access(c.user)
         data = request.GET
         if 'id' in data.keys():
             search = {'id' : data['id']}
@@ -70,6 +80,7 @@ class SlaController(base.BaseController):
                 
 
     def list(self):
+        self._check_access(c.user)
         table_results = []
         entries = SLA_Mapping.getAllDetails()
         for entry in entries:
@@ -83,6 +94,7 @@ class SlaController(base.BaseController):
         return base.render('sla/index.html', extra_vars = {'results' : table_results})
      
     def manage(self):
+        self._check_access(c.user)
         data = request.POST
         log.info('request post data : %s', data.keys())
         registered_sla = SLA.getAll()
@@ -90,6 +102,7 @@ class SlaController(base.BaseController):
         return base.render('sla/edit.html', extra_vars={'data' : data, 'registered_sla' : registered_sla})
 
     def map_user_sla(self):
+        self._check_access(c.user)
         data = request.POST
         if 'save' in data.keys():
             log.info('received data: %s', data)
@@ -195,6 +208,7 @@ class SlaController(base.BaseController):
             h.flash_success(message.format(user_name))
         
     def add(self):
+        self._check_access(c.user)
         data = request.POST
         if 'save' in data.keys():
             errors = self._validate_sla_data(data)
@@ -210,6 +224,7 @@ class SlaController(base.BaseController):
         
     
     def edit(self):
+        self._check_access(c.user)
         data_post = request.POST
         if 'save' in data_post.keys():
             errors = self._validate_sla_data(data_post)
