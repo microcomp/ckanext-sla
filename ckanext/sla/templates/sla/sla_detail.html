@@ -24,10 +24,11 @@
 	</p>
 	<p>
 	{{_('Priority')}} : {{ data_detail.priority}}
-	</p>
+	{% if h.check_access('sla_management') %}
 	{{ h.nav_link(_('Edit'), controller='ckanext.sla.sla:SlaController', action='edit', id=data_detail.id, class_='btn') }}
+	{% endif %}
 {% endif %}
-{% if data_users %}
+{% if data_users and h.check_access('sla_management') %}
 <p>
 <h3>
 {{ _('Following users are assigned to this SLA:') }}
