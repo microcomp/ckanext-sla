@@ -27,5 +27,7 @@ setup(
         sla = ckanext.sla.plugin:SlaPlugin
         [paste.paster_command]
         sla-cmd = ckanext.sla.sla_cmd:SlaCmd
+        [babel.extractors]
+        ckan = ckan.lib.extract:extract_ckan
     ''',
 )

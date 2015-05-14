@@ -28,7 +28,7 @@ class SlaController(base.BaseController):
                     'name' : sla_instance.name,
                     'number' : sla_instance.level,
                     'rqs' : sla_instance.rate_rq_s,
-                    'speed' : sla_instance.speed_mb_s,
+                    'speed' : sla_instance.speed_bytes_s,
                     'priority' : sla_instance.priority}
             search = {'sla_id' : id}
             relationships = SLA_Mapping.getAllDetails(**search)
@@ -237,7 +237,7 @@ class SlaController(base.BaseController):
                            'name' : sla_instance.name,
                            'number' : sla_instance.level,
                            'rqs' : sla_instance.rate_rq_s,
-                           'speed' : sla_instance.speed_mb_s,
+                           'speed' : sla_instance.speed_bytes_s,
                            'priority' : sla_instance.priority}
                     return base.render('sla/edit_sla.html', extra_vars={'data' : data, 'errors' : errors })
             self._edit_sla(data_post['id'], data_post['name'], data_post['number'], data_post['rqs'], data_post['speed'], data_post['priority'])
@@ -256,7 +256,7 @@ class SlaController(base.BaseController):
                        'name' : sla_instance.name,
                        'number' : sla_instance.level,
                        'rqs' : sla_instance.rate_rq_s,
-                       'speed' : sla_instance.speed_mb_s,
+                       'speed' : sla_instance.speed_bytes_s,
                        'priority' : sla_instance.priority}
         
             return base.render('sla/edit_sla.html', extra_vars={'data' : data, 'errors' : None })
@@ -303,7 +303,7 @@ class SlaController(base.BaseController):
         new_sla.save()
         h.flash_success(_("New SLA was registered"))
     
-    def _edit_sla(self, id, new_name, new_number, new_rqs, new_mbs, new_priority):
+    def _edit_sla(self, id, new_name, new_number, new_rqs, new_bytes, new_priority):
         search = {'id' : id}
         result = SLA.get(**search)
         if len(result)==1:
@@ -311,7 +311,7 @@ class SlaController(base.BaseController):
             updated_sla.name = new_name
             updated_sla.level = new_number
             updated_sla.rate_rq_s = new_rqs
-            updated_sla.speed_mb_s = new_mbs
+            updated_sla.speed_bytes_s = new_bytes
             updated_sla.priority = new_priority
             updated_sla.save()
             h.flash_success(_("SLA was updated"))

@@ -1,4 +1,4 @@
-﻿--
+--
 -- PostgreSQL database dump
 --
 
@@ -16,15 +16,15 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: sla; Type: TABLE; Schema: public; Owner: ckan_default; Tablespace:
+-- Name: sla; Type: TABLE; Schema: public; Owner: ckan_default; Tablespace: 
 --
 
 CREATE TABLE sla (
     id text NOT NULL,
     name text,
     level integer,
-    rate_rq_s bigint,
-    speed_mb_s double precision,
+    rate_rq_s integer,
+    speed_bytes_s integer,
     priority integer
 );
 
@@ -32,7 +32,15 @@ CREATE TABLE sla (
 ALTER TABLE public.sla OWNER TO ckan_default;
 
 --
--- Name: sla_pkey; Type: CONSTRAINT; Schema: public; Owner: ckan_default; Tablespace:
+-- Data for Name: sla; Type: TABLE DATA; Schema: public; Owner: ckan_default
+--
+
+COPY sla (id, name, level, rate_rq_s, speed_bytes_s, priority) FROM stdin;
+\.
+
+
+--
+-- Name: sla_pkey; Type: CONSTRAINT; Schema: public; Owner: ckan_default; Tablespace: 
 --
 
 ALTER TABLE ONLY sla
@@ -42,3 +50,4 @@ ALTER TABLE ONLY sla
 --
 -- PostgreSQL database dump complete
 --
+

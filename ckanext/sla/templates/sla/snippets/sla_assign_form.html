@@ -30,9 +30,9 @@
   <div class="form-actions">
     {% block delete_button %}
     {% if data.rel_id %}
-      {{ h.nav_link(_('Delete'), controller='ckanext.sla.sla:SlaController', action='delete_relationship', id=data.rel_id, class_='btn') }}
+<!--       {{ h.nav_link(_('Delete'), controller='ckanext.sla.sla:SlaController', action='delete_relationship', id=data.rel_id, class_='btn') }} -->
       {% set locale = h.dump_json({'content': _('Are you sure you want to remove this relationship?')}) %}
-	  <a class="btn btn-danger pull-left" href="{% url_for controller='ckanext.sla.sla:SlaController', action='delete_relationship', id=data.id %}" data-module="confirm-action" data-module-i18n="{{ locale }}">{% block delete_button_text %}{{ _('Delete') }}{% endblock %}</a>
+	  <a class="btn btn-danger pull-left" href="{% url_for controller='ckanext.sla.sla:SlaController', action='delete_relationship', id=data.rel_id %}" data-module="confirm-action" data-module-i18n="{{ locale }}">{% block delete_button_text %}{{ _('Delete') }}{% endblock %}</a>
     {% endif %}
     {% endblock %}
     <button class="btn btn-primary" type="submit" name="save">{% block button_text %}{{ _('Assign SLA') }}{% endblock %}</button>

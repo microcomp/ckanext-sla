@@ -18,7 +18,7 @@
     {{ form.input('name', label=_('Name'), id='field-name', placeholder=_('SLA name '), value=data.name, error=errors.name, classes=['control-full'], is_required=True) }}
     {{ form.input('number', label=_('Number'), id='field-number', placeholder=_('0'), value=data.number, error=errors.number, classes=['control-full'], is_required=True) }}
     {{ form.input('rqs', label=_('Requests per second'), id='field-rqs', placeholder=_('0'), value=data.rqs, error=errors.rqs, classes=['control-full'], is_required=True) }}
-    {{ form.input('speed', label=_('Speed (MB/s)'), id='field-speed', placeholder=_('0'), value=data.speed, error=errors.speed, classes=['control-full'], is_required=True) }}
+    {{ form.input('speed', label=_('Speed (bytes/s)'), id='field-speed', placeholder=_('0'), value=data.speed, error=errors.speed, classes=['control-full'], is_required=True) }}
     {{ form.input('priority', label=_('Priority'), id='field-priority', placeholder=_('0'), value=data.priority, error=errors.priority, classes=['control-full'], is_required=True) }}
   {% endblock %}
 

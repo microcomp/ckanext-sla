@@ -1,5 +1,5 @@
-from sqlalchemy.sql.expression import or_
-from sqlalchemy import types, Column, Table, ForeignKey, func
+from sqlalchemy.sql.expression import or_, and_
+from sqlalchemy import types, Column, Table, ForeignKey, func, CheckConstraint
 import vdm.sqlalchemy
 import types as _types
 from ckan.model import domain_object
@@ -12,14 +12,15 @@ import uuid
 def make_uuid():
     return unicode(uuid.uuid4())
 
-
+#CheckConstraint(and_('rate_rq_s>=0', 'rate_rq_s<10'))
 sla_table = Table('sla', metadata,
                         Column('id', types.UnicodeText, primary_key=True, default=make_uuid),
                         Column('name', types.UnicodeText, default= u''),
                         Column('level', types.Integer, default=0),
-                        Column('rate_rq_s', types.BigInteger, default=0),
-                        Column('speed_mb_s', types.Float, default=0),
-                        Column('priority', types.Integer, default=0),
+                        Column('rate_rq_s', types.Integer, CheckConstraint('rate_rq_s>=0'), default=0),
+                        Column('speed_bytes_s', types.Integer, CheckConstraint('speed_bytes_s>=0'), default=0),
+                        Column('priority', types.Integer, CheckConstraint('priority>=0'), default=0),
+                        Column('max_request_execution_time', types.Integer, CheckConstraint('max_request_execution_time>=0'), default=0),
                         )
  
 sla_mapping_table = Table('sla_mapping', metadata,
@@ -30,13 +31,13 @@ sla_mapping_table = Table('sla_mapping', metadata,
     
  
 class SLA(domain_object.DomainObject):
-    def __init__(self, name, level, rate_rq_s=None, speed_mb_s=None, priority=None):
+    def __init__(self, name, level, rate_rq_s=None, speed_bytes_s=None, priority=None):
         assert name
         assert level
         self.name = name
         self.level = level
         self.rate_rq_s = rate_rq_s
-        self.speed_mb_s = speed_mb_s
+        self.speed_bytes_s = speed_bytes_s
         self.priority = priority
     @classmethod
     def get(cls, **kw):

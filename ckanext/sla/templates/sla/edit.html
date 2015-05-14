@@ -15,7 +15,7 @@
         <th>{{_('SLA name')}}</th>
         <th>{{_('Number')}}</th>
         <th>{{_('Requests per second')}}</th>
-        <th>{{_('Speed (MB/s)')}}</th>
+        <th>{{_('Speed (bytes/s)')}}</th>
         <th>{{_('Priority')}}</th>
       </tr>
     </thead>
@@ -25,7 +25,7 @@
 		<td>{{sla.name}}</td>
 		<td>{{sla.level}}</td>
 		<td>{{sla.rate_rq_s}}</td>
-		<td>{{sla.speed_mb_s}}</td>
+		<td>{{sla.speed_bytes_s}}</td>
 		<td>{{sla.priority}}</td>
 		<td>{{ h.nav_link(_('Edit'), controller='ckanext.sla.sla:SlaController', action='edit', id=sla.id, class_='btn') }}</td>	
 		</tr>
