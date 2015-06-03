@@ -13,20 +13,20 @@
 	<thead>
       <tr>
         <th>{{_('SLA name')}}</th>
-        <th>{{_('Number')}}</th>
+        <th>{{_('Level')}}</th>
         <th>{{_('Requests per second')}}</th>
         <th>{{_('Speed (bytes/s)')}}</th>
-        <th>{{_('Priority')}}</th>
+        <th>{{_('Max. execution time')}}</th>
       </tr>
     </thead>
 <tbody>
 {% for sla in registered_sla %}
 		<tr>
-		<td>{{sla.name}}</td>
+		<td><a href="{{ h.url_for(controller='ckanext.sla.sla:SlaController', action='sla_detail', id=sla.id)}}">{{ sla.name }}</a></td>
 		<td>{{sla.level}}</td>
 		<td>{{sla.rate_rq_s}}</td>
 		<td>{{sla.speed_bytes_s}}</td>
-		<td>{{sla.priority}}</td>
+		<td>{{sla.timeout_s}}</td>
 		<td>{{ h.nav_link(_('Edit'), controller='ckanext.sla.sla:SlaController', action='edit', id=sla.id, class_='btn') }}</td>	
 		</tr>
 {% endfor %}

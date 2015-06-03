@@ -16,10 +16,10 @@
 
   {% block fields %}
     {{ form.input('name', label=_('Name'), id='field-name', placeholder=_('SLA name '), value=data.name, error=errors.name, classes=['control-full'], is_required=True) }}
-    {{ form.input('number', label=_('Number'), id='field-number', placeholder=_('0'), value=data.number, error=errors.number, classes=['control-full'], is_required=True) }}
-    {{ form.input('rqs', label=_('Requests per second'), id='field-rqs', placeholder=_('0'), value=data.rqs, error=errors.rqs, classes=['control-full'], is_required=True) }}
-    {{ form.input('speed', label=_('Speed (bytes/s)'), id='field-speed', placeholder=_('0'), value=data.speed, error=errors.speed, classes=['control-full'], is_required=True) }}
-    {{ form.input('priority', label=_('Priority'), id='field-priority', placeholder=_('0'), value=data.priority, error=errors.priority, classes=['control-full'], is_required=True) }}
+    {{ form.input('level', label=_('Level'), id='field-level', placeholder=_('0'), value=data.level, error=errors.level, classes=['control-full'], is_required=True) }}
+    {{ form.input('rate_rq_s', label=_('Requests per second'), id='field-rate_rq_s', placeholder=_('0'), value=data.rate_rq_s, error=errors.rate_rq_s, classes=['control-full'], is_required=True) }}
+    {{ form.input('speed_bytes_s', label=_('Speed (bytes/s)'), id='field-speed_bytes_s', placeholder=_('0'), value=data.speed_bytes_s, error=errors.speed_bytes_s, classes=['control-full'], is_required=True) }}
+    {{ form.input('timeout_s', label=_('Max. time for execution'), id='field-timeout_s', placeholder=_('0'), value=data.timeout_s, error=errors.timeout_s, classes=['control-full'], is_required=True) }}
   {% endblock %}
 
   <div class="form-actions">

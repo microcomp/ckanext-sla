@@ -14,18 +14,21 @@
 	{{_('SLA name')}} : {{ data_detail.name }}
 	</p>
 	<p>
-	{{_('SLA number')}} : {{ data_detail.number }}
+	{{_('SLA level')}} : {{ data_detail.level }}
 	</p>
 	<p>
-	{{_('Requests per second')}} : {{ data_detail.rqs}}
+	{{_('Requests per second')}} : {{ data_detail.rate_rq_s}}
 	</p>
 	<p>
-	{{_('Speed')}} : {{ data_detail.speed}}
+	{{_('Speed (bytes/s)')}} : {{ data_detail.speed_bytes_s}}
 	</p>
 	<p>
-	{{_('Priority')}} : {{ data_detail.priority}}
+	{{_('Max. execution time')}} : {{ data_detail.timeout_s}}
+	</p>
 	{% if h.check_access('sla_management') %}
+	<p>
 	{{ h.nav_link(_('Edit'), controller='ckanext.sla.sla:SlaController', action='edit', id=data_detail.id, class_='btn') }}
+	</p>
 	{% endif %}
 {% endif %}
 {% if data_users and h.check_access('sla_management') %}
@@ -37,8 +40,8 @@
 {% for user in data_users %}
 <p>
 <h3><a href="{{ h.url_for(controller='user', action='read', id=user.id) }}">{{ user.name }}</a></h3>
-</p>
 {{ h.nav_link(_('Edit'), controller='ckanext.sla.sla:SlaController', action='map_user_sla', sla_id=data_detail.id, user_id=user.id, class_='btn') }}
+</p>
 {% endfor %}
 {% endif %}
 {% endblock %}

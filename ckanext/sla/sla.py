@@ -7,8 +7,9 @@ from hurry.filesize import size
 import ckan.logic as logic
 from ckan.common import _, c, request
 import ckan.lib.helpers as h
+import ckan.lib.dictization as dictization
 
-log = logging.getLogger('ckanext')
+log = logging.getLogger(__name__)
 
 class SlaController(base.BaseController):
     def _check_access(self, user):
@@ -24,12 +25,7 @@ class SlaController(base.BaseController):
         sla = SLA.get(**search)
         if len(sla)==1:
             sla_instance = sla[0]
-            data_detail = {'id' : sla_instance.id,
-                    'name' : sla_instance.name,
-                    'number' : sla_instance.level,
-                    'rqs' : sla_instance.rate_rq_s,
-                    'speed' : sla_instance.speed_bytes_s,
-                    'priority' : sla_instance.priority}
+            data_detail =  dictization.table_dictize(sla_instance, context = {'model' : model})
             search = {'sla_id' : id}
             relationships = SLA_Mapping.getAllDetails(**search)
             data_users = []
@@ -214,9 +210,9 @@ class SlaController(base.BaseController):
             errors = self._validate_sla_data(data)
             if errors:
                 return base.render('sla/add_sla.html', extra_vars={'data' : data,
-                                                                   'errors' : errors})
+                                                               'errors' : errors})
             log.info("creating new sla")
-            self._add_sla(data['name'], data['number'], data['rqs'], data['speed'], data['priority'])
+            self._add_sla(data['name'], data['level'], data['rate_rq_s'], data['speed_bytes_s'], data['timeout_s'])
             registered_sla = SLA.getAll()
             log.info('registered sla: %s', registered_sla)
             return base.render('sla/edit.html', extra_vars={'registered_sla' : registered_sla})
@@ -233,12 +229,7 @@ class SlaController(base.BaseController):
                 result = SLA.get(**search)
                 if len(result)==1:
                     sla_instance = result[0]
-                    data = {'id' : sla_instance.id,
-                           'name' : sla_instance.name,
-                           'number' : sla_instance.level,
-                           'rqs' : sla_instance.rate_rq_s,
-                           'speed' : sla_instance.speed_bytes_s,
-                           'priority' : sla_instance.priority}
+                    data  = dictization.table_dictize(sla_instance, context = {'model' : model})
                     return base.render('sla/edit_sla.html', extra_vars={'data' : data, 'errors' : errors })
             self._edit_sla(data_post['id'], data_post['name'], data_post['number'], data_post['rqs'], data_post['speed'], data_post['priority'])
             registered_sla = SLA.getAll()
@@ -252,13 +243,7 @@ class SlaController(base.BaseController):
             result = SLA.get(**search)
             if len(result)==1:
                 sla_instance = result[0]
-                data = {'id' : sla_instance.id,
-                       'name' : sla_instance.name,
-                       'number' : sla_instance.level,
-                       'rqs' : sla_instance.rate_rq_s,
-                       'speed' : sla_instance.speed_bytes_s,
-                       'priority' : sla_instance.priority}
-        
+                data = dictization.table_dictize(sla_instance, context = {'model' : model})     
             return base.render('sla/edit_sla.html', extra_vars={'data' : data, 'errors' : None })
     
     def _validate_sla_data(self, data_dict):
@@ -276,24 +261,29 @@ class SlaController(base.BaseController):
                     errors['name'] = ('SLA name has to be unique. Please change the name and try again.',)
                 
         try:
-            val = int(data_dict['number'])
+            val = int(data_dict['level'])
         except ValueError:
-            errors['number'] = ('This attribute has to be an integer. Please enter a valid value.',)
-            
-        try:
-            val = int(data_dict['rqs'])
-        except ValueError:
-            errors['rqs'] = ('This attribute has to be an integer. Please enter a valid value.',)
+            errors['level'] = ('This attribute has to be an integer. Please enter a valid value.',)
+         
+        search = {'level' : data_dict['level']}
+        result = SLA.get(**search)
+        if result:
+            errors['level'] = ('SLA with this level already exists. Please change the value.',)
         
         try:
-            val = float(data_dict['speed'])
+            val = int(data_dict['rate_rq_s'])
         except ValueError:
-            errors['speed'] = ('This attribute has to be a number. Please enter a valid value.',)
+            errors['rate_rq_s'] = ('This attribute has to be an integer. Please enter a valid value.',)
         
         try:
-            val = int(data_dict['priority'])
+            val = float(data_dict['speed_bytes_s'])
         except ValueError:
-            errors['priority'] = ('This attribute has to be an integer. Please enter a valid value.',)
+            errors['speed_bytes_s'] = ('This attribute has to be a number. Please enter a valid value.',)
+        
+        try:
+            val = int(data_dict['timeout_s'])
+        except ValueError:
+            errors['timeout_s'] = ('This attribute has to be an integer. Please enter a valid value.',)
             
         return errors
 
@@ -303,16 +293,18 @@ class SlaController(base.BaseController):
         new_sla.save()
         h.flash_success(_("New SLA was registered"))
     
-    def _edit_sla(self, id, new_name, new_number, new_rqs, new_bytes, new_priority):
+    def _edit_sla(self, id, new_name, new_level, new_rqs, new_bytes, new_timeout):
         search = {'id' : id}
         result = SLA.get(**search)
         if len(result)==1:
             updated_sla = result[0]
             updated_sla.name = new_name
-            updated_sla.level = new_number
+            updated_sla.level = new_level
             updated_sla.rate_rq_s = new_rqs
             updated_sla.speed_bytes_s = new_bytes
-            updated_sla.priority = new_priority
+            updated_sla.timeout_s = new_timeout
             updated_sla.save()
             h.flash_success(_("SLA was updated"))
+        else:
+            h.flash_error(_("Unable to edit the given SLA. Couldn't retrieve object from database."))
         

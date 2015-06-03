@@ -15,12 +15,11 @@ def make_uuid():
 #CheckConstraint(and_('rate_rq_s>=0', 'rate_rq_s<10'))
 sla_table = Table('sla', metadata,
                         Column('id', types.UnicodeText, primary_key=True, default=make_uuid),
-                        Column('name', types.UnicodeText, default= u''),
-                        Column('level', types.Integer, default=0),
-                        Column('rate_rq_s', types.Integer, CheckConstraint('rate_rq_s>=0'), default=0),
-                        Column('speed_bytes_s', types.Integer, CheckConstraint('speed_bytes_s>=0'), default=0),
-                        Column('priority', types.Integer, CheckConstraint('priority>=0'), default=0),
-                        Column('max_request_execution_time', types.Integer, CheckConstraint('max_request_execution_time>=0'), default=0),
+                        Column('name', types.UnicodeText, nullable=False),
+                        Column('level', types.Integer, nullable=False, unique=True),
+                        Column('rate_rq_s', types.Integer, CheckConstraint('rate_rq_s>=0'), nullable=False),
+                        Column('speed_bytes_s', types.Integer, CheckConstraint('speed_bytes_s>=0'), nullable=False),
+                        Column('timeout_s', types.Integer, CheckConstraint('timeout_s>=0'), nullable=False),
                         )
  
 sla_mapping_table = Table('sla_mapping', metadata,
@@ -31,14 +30,17 @@ sla_mapping_table = Table('sla_mapping', metadata,
     
  
 class SLA(domain_object.DomainObject):
-    def __init__(self, name, level, rate_rq_s=None, speed_bytes_s=None, priority=None):
+    def __init__(self, name, level, rate_rq_s, speed_bytes_s, timeout_s):
         assert name
         assert level
+        assert rate_rq_s
+        assert speed_bytes_s
+        assert timeout_s
         self.name = name
         self.level = level
         self.rate_rq_s = rate_rq_s
         self.speed_bytes_s = speed_bytes_s
-        self.priority = priority
+        self.timeout_s = timeout_s
     @classmethod
     def get(cls, **kw):
         '''Finds a single entity in the register.'''

@@ -21,22 +21,25 @@ SET default_with_oids = false;
 
 CREATE TABLE sla (
     id text NOT NULL,
-    name text,
-    level integer,
-    rate_rq_s integer,
-    speed_bytes_s integer,
-    priority integer
+    name text NOT NULL,
+    level integer NOT NULL,
+    rate_rq_s integer NOT NULL,
+    speed_bytes_s integer NOT NULL,
+    timeout_s integer NOT NULL,
+    CONSTRAINT sla_rate_rq_s_check CHECK ((rate_rq_s >= 0)),
+    CONSTRAINT sla_speed_bytes_s_check CHECK ((speed_bytes_s >= 0)),
+    CONSTRAINT sla_timeout_s_check CHECK ((timeout_s >= 0))
 );
 
 
 ALTER TABLE public.sla OWNER TO ckan_default;
 
 --
--- Data for Name: sla; Type: TABLE DATA; Schema: public; Owner: ckan_default
+-- Name: sla_level_key; Type: CONSTRAINT; Schema: public; Owner: ckan_default; Tablespace: 
 --
 
-COPY sla (id, name, level, rate_rq_s, speed_bytes_s, priority) FROM stdin;
-\.
+ALTER TABLE ONLY sla
+    ADD CONSTRAINT sla_level_key UNIQUE (level);
 
 
 --
