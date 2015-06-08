@@ -5,10 +5,14 @@
 	<li>{{ _('Add new SLA') }}</li>
 {% endblock %}
 {% block primary_content %}
+<article class="module">
+<header class="module-content page-header">
+<h1>{{ _('SLA Management') }}</h1>
+</header>
 
-<div class="page-header" style="border-left: 1px solid #d4d4d4;">
-<h1 style="padding-left:1em;" >{{ _('SLA Management') }}</h1>
-</div>
+<div class="module-content">
 <h2>{{ _('Register new SLA') }}</h2>
 {% snippet 'sla/snippets/sla_form.html', data=data, errors=errors %}
+</div>
+</article>
 {% endblock %}

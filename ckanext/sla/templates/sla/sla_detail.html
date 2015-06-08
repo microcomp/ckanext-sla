@@ -5,10 +5,11 @@
 	<li>{{ _('Detail') }}</li>
 {% endblock %}
 {% block primary_content %}
-<div class="page-header" style="border-left: 1px solid #d4d4d4;">
-<h1 style="padding-left:1em;" >{{ _('SLA detail') }}</h1>
-</div>
-
+<article class="module">
+<header class="module-content page-header">
+<h1>{{ _('SLA detail') }}</h1>
+</header>
+<div class="module-content">
 {% if data_detail %}
 	<p>
 	{{_('SLA name')}} : {{ data_detail.name }}
@@ -40,8 +41,10 @@
 {% for user in data_users %}
 <p>
 <h3><a href="{{ h.url_for(controller='user', action='read', id=user.id) }}">{{ user.name }}</a></h3>
-{{ h.nav_link(_('Edit'), controller='ckanext.sla.sla:SlaController', action='map_user_sla', sla_id=data_detail.id, user_id=user.id, class_='btn') }}
+{{ h.nav_link(_('Edit'), controller='ckanext.sla.sla:SlaController', action='map_user_sla', sla_id=data_detail.id, user_id=user.id, class_='mybutton') }}
 </p>
 {% endfor %}
 {% endif %}
+</div>
+</article>
 {% endblock %}

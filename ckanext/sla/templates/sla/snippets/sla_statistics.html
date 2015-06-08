@@ -1,16 +1,23 @@
+<div>
+<section class="module-content">
 <h3>{{_('Statistics')}}</h3>
 {% set statistics = h.sla_statistics() %}
 {% if statistics %}
+
+<div class="nums">
     <p>
     {{_('The number of users per each SLA:')}}
     </p>
     {% for sla in statistics %}
-        <p>
-        {{ sla['name'] }} : {{ sla['count'] }}
-        </p>
+        <dl>
+        <dt>{{ sla['name'] }}</dt> <dd><span>{{ sla['count'] }}</span></dd>
+        </dl>
     {% endfor %}
+</div>
 {% else %}
     <p>
     {{_('The is currently no data to display.')}}
     </p>
 {% endif %}
+</section>
+</div>

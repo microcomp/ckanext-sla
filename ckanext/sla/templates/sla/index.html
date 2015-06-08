@@ -1,9 +1,10 @@
 {% extends "/sla/base_sla.html" %}
 {% block primary_content %}
-<div class="page-header" style="border-left: 1px solid #d4d4d4;">
-<h1 style="padding-left:1em;" >{{ _('SLA Administration') }}</h1>
-</div>
-
+<article class="module">
+<header class="module-content page-header">
+<h1>{{ _('SLA Administration') }}</h1>
+</header>
+<div class="module-content">
 <h3 style="font-size: 1.3em;"> <a href="{{ h.url_for(controller='ckanext.sla.sla:SlaController', action='manage') }}"> <i class="fa fa-external-link" ></i> {{_('Edit SLA definitions')}} </a></h3>
 <h3 style="font-size: 1.3em;"> <a href="{{ h.url_for(controller='ckanext.sla.sla:SlaController', action='map_user_sla') }}"> <i class="fa fa-external-link" ></i> {{_('Assign SLA to users')}} </a></h3>
 {% if results %}
@@ -31,4 +32,6 @@
     </h3>
     </p>
 {% endif %}
+</div>
+</article>
 {% endblock %}
