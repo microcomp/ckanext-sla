@@ -231,7 +231,7 @@ class SlaController(base.BaseController):
                     sla_instance = result[0]
                     data  = dictization.table_dictize(sla_instance, context = {'model' : model})
                     return base.render('sla/edit_sla.html', extra_vars={'data' : data, 'errors' : errors })
-            self._edit_sla(data_post['id'], data_post['name'], data_post['number'], data_post['rqs'], data_post['speed'], data_post['priority'])
+            self._edit_sla(data_post['id'], data_post['name'], data_post['level'], data_post['rate_rq_s'], data_post['speed_bytes_s'], data_post['timeout_s'])
             registered_sla = SLA.getAll()
             return base.render('sla/edit.html', extra_vars={'data' : None,
                                                             'registered_sla' : registered_sla})
@@ -267,7 +267,7 @@ class SlaController(base.BaseController):
          
         search = {'level' : data_dict['level']}
         result = SLA.get(**search)
-        if result:
+        if result and data_dict.get('id',None) and result[0].id!=data_dict['id']:
             errors['level'] = ('SLA with this level already exists. Please change the value.',)
         
         try:
