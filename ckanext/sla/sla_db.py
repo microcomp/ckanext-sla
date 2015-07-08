@@ -25,7 +25,7 @@ sla_table = Table('sla', metadata,
 sla_mapping_table = Table('sla_mapping', metadata,
                             Column('id', types.UnicodeText, primary_key=True, default=make_uuid),
                             Column('sla_id',  types.UnicodeText, ForeignKey('sla.id'), nullable=False),
-                            Column('user_id', types.UnicodeText, ForeignKey('user.id'), nullable=False)
+                            Column('user_id', types.UnicodeText, nullable=False)
                         )
     
  

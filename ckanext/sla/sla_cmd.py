@@ -34,12 +34,12 @@ class SlaCmd(CkanCommand):
                 log.info("sla table created successfully")
             else:
                 log.info("sla table already exists")
-            #if not sla_mapping_table.exists():
-            #    log.info("creating sla_mapping table")
-            #    sla_mapping_table.create()
-            #    log.info("sla_mapping created successfully")
-            #else:
-            #    log.info("sla_mapping already exists")
+            if not sla_mapping_table.exists():
+                log.info("creating sla_mapping table")
+                sla_mapping_table.create()
+                log.info("sla_mapping created successfully")
+            else:
+                log.info("sla_mapping already exists")
             log.info('End of db initialization')
         if cmd == 'uninstall':
             log.info('Starting uninstall command')
@@ -47,10 +47,10 @@ class SlaCmd(CkanCommand):
                 log.info("dropping sla table")
                 sla_table.drop()
                 log.info("dropped sla table successfully")
-            #if sla_mapping_table.exists():
-            #    log.info("dropping sla mapping table")
-            #    sla_mapping_table.drop()
-            #    log.info("dropped sla mapping table successfully")
-            #else:
-            #    log.info("Table sla doesn't exist")
+            if sla_mapping_table.exists():
+                log.info("dropping sla mapping table")
+                sla_mapping_table.drop()
+                log.info("dropped sla mapping table successfully")
+            else:
+                log.info("Table sla doesn't exist")
             log.info('End of uninstall command')
