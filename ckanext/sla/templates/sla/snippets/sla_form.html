@@ -19,7 +19,9 @@
     {{ form.input('level', label=_('Level'), id='field-level', placeholder=_('0'), value=data.level, error=errors.level, classes=['control-full'], is_required=True) }}
     {{ form.input('rate_rq_s', label=_('Requests per second'), id='field-rate_rq_s', placeholder=_('0'), value=data.rate_rq_s, error=errors.rate_rq_s, classes=['control-full'], is_required=True) }}
     {{ form.input('speed_bytes_s', label=_('Speed (bytes/s)'), id='field-speed_bytes_s', placeholder=_('0'), value=data.speed_bytes_s, error=errors.speed_bytes_s, classes=['control-full'], is_required=True) }}
-    {{ form.input('timeout_s', label=_('Max. time for execution'), id='field-timeout_s', placeholder=_('0'), value=data.timeout_s, error=errors.timeout_s, classes=['control-full'], is_required=True) }}
+    {{ form.input('timeout_s', label=_('Max. execution time'), id='field-timeout_s', placeholder=_('0'), value=data.timeout_s, error=errors.timeout_s, classes=['control-full'], is_required=True) }}
+  	{{ form.checkbox('default_for_anonymous_users', label=_('Is default for anonymous users'), checked=data.default_for_anonymous_users, id='field-default_for_anonymous_users', value=true, error=errors.default_for_anonymous_users) }}
+  	{{ form.checkbox('default_for_authenticated_users', label=_('Is default for authenticated users'), checked=data.default_for_authenticated_users, id='field-default_for_authenticated_users', value=true, error=errors.default_for_authenticated_users) }}
   {% endblock %}
 
   <div class="form-actions">

@@ -26,6 +26,16 @@
 	<p>
 	{{_('Max. execution time')}} : {{ data_detail.timeout_s}}
 	</p>
+	{% if data_detail.default_for_authenticated_users %}
+	<p>
+	{{_('This SLA is default for authenticated users')}}
+	</p>
+	{% endif %}
+	{% if data_detail.default_for_anonymous_users %}
+	<p>
+	{{_('This SLA is default for anonymous users')}}
+	</p>
+	{% endif %}
 	{% if h.check_access('sla_management') %}
 	<p>
 	{{ h.nav_link(_('Edit'), controller='ckanext.sla.sla:SlaController', action='edit', id=data_detail.id, class_='btn') }}

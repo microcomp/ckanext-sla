@@ -28,7 +28,13 @@
 		<td>{{sla.rate_rq_s}}</td>
 		<td>{{sla.speed_bytes_s}}</td>
 		<td>{{sla.timeout_s}}</td>
-		<td>{{ h.nav_link(_('Edit'), controller='ckanext.sla.sla:SlaController', action='edit', id=sla.id, class_='btn') }}</td>	
+		<td>{{ h.nav_link(_('Edit'), controller='ckanext.sla.sla:SlaController', action='edit', id=sla.id, class_='btn') }}
+		{% if sla.default_for_authenticated_users%}
+		<span class="control-required" title="{{_('default SLA for authenticated user')}}">*</span>
+		{% endif %}
+		{% if sla.default_for_authenticated_users%}
+		<span class="control-required" title="{{_('default SLA for anonymous user')}}">*</span>
+		{% endif %}
 		</tr>
 {% endfor %}
  </tbody>

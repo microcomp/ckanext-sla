@@ -1,7 +1,7 @@
 from ckan.lib.cli import CkanCommand
 import sys
 import logging
-from ckanext.sla.sla_db import sla_table, sla_mapping_table
+from ckanext.sla.sla_db import sla_table, sla_mapping_table, create_sla_table
 log = logging.getLogger('ckanext')
 log.setLevel(logging.DEBUG)
 
@@ -30,7 +30,7 @@ class SlaCmd(CkanCommand):
             log.info('Starting db initialization')
             if not sla_table.exists():
                 log.info("creating sla table")
-                sla_table.create()
+                create_sla_table()
                 log.info("sla table created successfully")
             else:
                 log.info("sla table already exists")

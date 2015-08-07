@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ckanext-sla 0.1\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-06-19 14:45+0100\n"
+"POT-Creation-Date: 2015-08-07 14:38+0200\n"
 "PO-Revision-Date: 2015-05-14 10:38+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: sk <LL@li.org>\n"
@@ -21,63 +21,67 @@ msgstr ""
 
 #: ckanext/sla/plugin.py:31
 msgid "Default SLA"
-msgstr "Štandardné SLA"
+msgstr "Štandardná SLA"
 
-#: ckanext/sla/sla.py:53
+#: ckanext/sla/sla.py:55
 msgid "SLA {0} was deleted!"
 msgstr "SLA {0} bolo vymazané!"
 
-#: ckanext/sla/sla.py:58
+#: ckanext/sla/sla.py:60
 msgid "You can not delete SLA {0}, because of assigned users to it!"
 msgstr "Nemôžete vymazať SLA {0} kvôli pridelenému uživateľovi!"
 
-#: ckanext/sla/sla.py:72
+#: ckanext/sla/sla.py:74
 msgid "The SLA of user {0} was removed."
 msgstr "Používateľ SLA bol odstránený."
 
-#: ckanext/sla/sla.py:110
+#: ckanext/sla/sla.py:112
 msgid "This relationship already exists. Nothing has been changed."
 msgstr "Tento vzťah už existuje. Nič nebolo zmenené."
 
-#: ckanext/sla/sla.py:113 ckanext/sla/sla.py:135
+#: ckanext/sla/sla.py:115 ckanext/sla/sla.py:137
 msgid "Not defined"
 msgstr "Nedefinované"
 
-#: ckanext/sla/sla.py:168
+#: ckanext/sla/sla.py:170
 msgid "Please select a user."
 msgstr "Prosím vyberte používateľa"
 
-#: ckanext/sla/sla.py:170
+#: ckanext/sla/sla.py:172
 msgid "Please select a SLA for user."
 msgstr "Prosím vyberte SLa pre používateľa"
 
-#: ckanext/sla/sla.py:177
+#: ckanext/sla/sla.py:179
 msgid "You can not change user. You are allowed to change SLA of user!"
 msgstr "Nemôžete zmeniť používateľa. Máte povolenie na zmenu SLA používateľa. "
 
-#: ckanext/sla/sla.py:183
+#: ckanext/sla/sla.py:185
 msgid "This user has already asigned SLA!"
 msgstr "Tento používateľ už má pridelené SLA!"
 
-#: ckanext/sla/sla.py:193
+#: ckanext/sla/sla.py:195
 msgid "New SLA was assigned to the user {0}"
 msgstr "Používateľovi {0} bola pridelená SLA"
 
-#: ckanext/sla/sla.py:203
+#: ckanext/sla/sla.py:205
 msgid "The SLA of the user {0} was changed."
 msgstr "SLA používateľa {0} bola zmenená."
 
-#: ckanext/sla/sla.py:294
+#: ckanext/sla/sla.py:229 ckanext/sla/sla.py:263
+msgid "Integrity error. PLease try again!"
+msgstr "Chyba integrity. Prosím skúste znova!"
+
+#: ckanext/sla/sla.py:349
 msgid "New SLA was registered"
 msgstr "Nová SLA bolo registrované"
 
-#: ckanext/sla/sla.py:307
+#: ckanext/sla/sla.py:364
 msgid "SLA was updated"
 msgstr "SLA bolo aktualizované"
 
-#: ckanext/sla/sla.py:309
+#: ckanext/sla/sla.py:366
 msgid "Unable to edit the given SLA. Couldn't retrieve object from database."
-msgstr ""
+msgstr "Nebolo možné editovať danú SLA. Nepodarilo sa získať objekt z databázy."
 
 #: ckanext/sla/templates/sla/add_sla.html:4
 #: ckanext/sla/templates/sla/edit.html:4 ckanext/sla/templates/sla/edit.html:9
@@ -96,9 +100,9 @@ msgid "SLA Management"
 msgstr "SLA Management"
 
 #: ckanext/sla/templates/sla/add_sla.html:14
-#: ckanext/sla/templates/sla/edit.html:37
+#: ckanext/sla/templates/sla/edit.html:43
 msgid "Register new SLA"
-msgstr "registrovať nové SLA"
+msgstr "Registrovať nové SLA"
 
 #: ckanext/sla/templates/sla/assign_sla.html:4
 #: ckanext/sla/templates/sla/snippets/sla_assign_form.html:38
@@ -152,15 +156,24 @@ msgstr "Rýchlosť (bytes/s)"
 
 #: ckanext/sla/templates/sla/edit.html:20
 #: ckanext/sla/templates/sla/sla_detail.html:27
+#: ckanext/sla/templates/sla/snippets/sla_form.html:22
 msgid "Max. execution time"
-msgstr "Max. čas vykonávania"
+msgstr "Max. dĺžka spracovania dotazu"
 
 #: ckanext/sla/templates/sla/edit.html:31
 #: ckanext/sla/templates/sla/index.html:23
-#: ckanext/sla/templates/sla/sla_detail.html:31
-#: ckanext/sla/templates/sla/sla_detail.html:44
+#: ckanext/sla/templates/sla/sla_detail.html:41
+#: ckanext/sla/templates/sla/sla_detail.html:54
 msgid "Edit"
 msgstr "Editovať"
+
+#: ckanext/sla/templates/sla/edit.html:33
+msgid "default SLA for authenticated user"
+msgstr "štandardná SLA pre autentifikovaných používateľov"
+
+#: ckanext/sla/templates/sla/edit.html:36
+msgid "default SLA for anonymous user"
+msgstr "štandardná SLA pre anonymných používateľov"
 
 #: ckanext/sla/templates/sla/edit_sla.html:5
 msgid "Edit SLA"
@@ -201,7 +214,15 @@ msgstr "SLA detail"
 msgid "SLA level"
 msgstr "Úroveň SLA"
 
-#: ckanext/sla/templates/sla/sla_detail.html:38
+#: ckanext/sla/templates/sla/sla_detail.html:31
+msgid "This SLA is default for authenticated users"
+msgstr "Táto SLA je štandardná pre autentifikovaných používateľov"
+
+#: ckanext/sla/templates/sla/sla_detail.html:36
+msgid "This SLA is default for anonymous users"
+msgstr "Táto SLA je štandardná pre anonymných používateľov"
+
+#: ckanext/sla/templates/sla/sla_detail.html:48
 msgid "Following users are assigned to this SLA:"
 msgstr "Nasledujúci používatelia sú priradení k tejto SLA"
 
@@ -212,7 +233,7 @@ msgstr "formulár obsahuje nevalidné vstupy."
 
 #: ckanext/sla/templates/sla/snippets/sla_assign_form.html:21
 msgid "Select appropriate SLA for user "
-msgstr "Vyberte vhodné SLA pre používateľa."
+msgstr "Vyberte vhodnú SLA pre používateľa."
 
 #: ckanext/sla/templates/sla/snippets/sla_assign_form.html:28
 #: ckanext/sla/templates/user/read_base.html:7
@@ -221,7 +242,7 @@ msgstr "SLA"
 
 #: ckanext/sla/templates/sla/snippets/sla_assign_form.html:33
 #: ckanext/sla/templates/sla/snippets/sla_assign_form.html:35
-#: ckanext/sla/templates/sla/snippets/sla_form.html:29
+#: ckanext/sla/templates/sla/snippets/sla_form.html:31
 msgid "Delete"
 msgstr "vymazať"
 
@@ -244,15 +265,19 @@ msgstr "SLA meno"
 msgid "0"
 msgstr "0"
 
-#: ckanext/sla/templates/sla/snippets/sla_form.html:22
-msgid "Max. time for execution"
-msgstr ""
+#: ckanext/sla/templates/sla/snippets/sla_form.html:23
+msgid "Is default for anonymous users"
+msgstr "štandardná SLA pre anonymných používateľov"
 
-#: ckanext/sla/templates/sla/snippets/sla_form.html:28
+#: ckanext/sla/templates/sla/snippets/sla_form.html:24
+msgid "Is default for authenticated users"
+msgstr "štandardná SLA pre autentifikovaných používateľov"
+
+#: ckanext/sla/templates/sla/snippets/sla_form.html:30
 msgid "Are you sure you want to delete this SLA?"
-msgstr "Ste si istý, že chcete vymazať toto SLA?"
+msgstr "Ste si istý, že chcete vymazať túto SLA?"
 
-#: ckanext/sla/templates/sla/snippets/sla_form.html:33
+#: ckanext/sla/templates/sla/snippets/sla_form.html:35
 msgid "Save"
 msgstr "Uložiť"
 
@@ -262,9 +287,8 @@ msgstr "Štatistiky"
 
 #: ckanext/sla/templates/sla/snippets/sla_statistics.html:9
 msgid "The number of users per each SLA:"
-msgstr "Počet používateľov za každé SLA."
+msgstr "Počet používateľov v rámci jednotlivých SLA:"
 
 #: ckanext/sla/templates/sla/snippets/sla_statistics.html:19
 msgid "The is currently no data to display."
 msgstr "Nie sú žiadne dáta na zobrazenie"
-
