@@ -1,18 +1,54 @@
 from sqlalchemy.sql.expression import or_, and_
-from sqlalchemy import types, Column, Table, ForeignKey, func, CheckConstraint
+from sqlalchemy import types, Column, Table, ForeignKey, func, CheckConstraint, exc
 import vdm.sqlalchemy
 import types as _types
 from ckan.model import domain_object
 from ckan.model.meta import metadata, Session, mapper
 from sqlalchemy.orm import relationship, backref
 from ckan.model.user import User
+from sqlalchemy.ext.declarative import declarative_base
 import uuid
 
+Base = declarative_base()
 
 def make_uuid():
     return unicode(uuid.uuid4())
 
-#CheckConstraint(and_('rate_rq_s>=0', 'rate_rq_s<10'))
+def create_sla_table():
+    sql = '''
+        CREATE TABLE sla
+        (
+          id text NOT NULL,
+          name text NOT NULL,
+          level integer NOT NULL,
+          rate_rq_s integer NOT NULL,
+          speed_bytes_s integer NOT NULL,
+          timeout_s integer NOT NULL,
+          default_for_anonymous_users boolean NOT NULL DEFAULT FALSE,
+          default_for_authenticated_users boolean NOT NULL DEFAULT FALSE,
+          CONSTRAINT sla_pkey PRIMARY KEY (id),
+          CONSTRAINT sla_level_key UNIQUE (level),
+          CONSTRAINT sla_rate_rq_s_check CHECK ((rate_rq_s >= 0)),
+          CONSTRAINT sla_speed_bytes_s_check CHECK ((speed_bytes_s >= 0)),
+          CONSTRAINT sla_timeout_s_check CHECK ((timeout_s >= 0)));
+        
+        CREATE UNIQUE INDEX idx_default_for_anonymous_users
+          ON sla
+          (default_for_anonymous_users)
+          WHERE default_for_anonymous_users = true;
+        
+        CREATE UNIQUE INDEX idx_default_for_authenticated_users
+          ON sla
+          (default_for_authenticated_users)
+          WHERE default_for_authenticated_users = true;
+    '''
+    conn = Session.connection()
+    try:
+        conn.execute(sql)
+    except exc.ProgrammingError:
+        pass
+    Session.commit()
+
 sla_table = Table('sla', metadata,
                         Column('id', types.UnicodeText, primary_key=True, default=make_uuid),
                         Column('name', types.UnicodeText, nullable=False),
@@ -20,6 +56,8 @@ sla_table = Table('sla', metadata,
                         Column('rate_rq_s', types.Integer, CheckConstraint('rate_rq_s>=0'), nullable=False),
                         Column('speed_bytes_s', types.Integer, CheckConstraint('speed_bytes_s>=0'), nullable=False),
                         Column('timeout_s', types.Integer, CheckConstraint('timeout_s>=0'), nullable=False),
+                        Column('default_for_anonymous_users', types.Boolean, nullable=False, default=False),
+                        Column('default_for_authenticated_users', types.Boolean, nullable=False, default=False)
                         )
  
 sla_mapping_table = Table('sla_mapping', metadata,
@@ -27,10 +65,9 @@ sla_mapping_table = Table('sla_mapping', metadata,
                             Column('sla_id',  types.UnicodeText, ForeignKey('sla.id'), nullable=False),
                             Column('user_id', types.UnicodeText, nullable=False)
                         )
-    
- 
+
 class SLA(domain_object.DomainObject):
-    def __init__(self, name, level, rate_rq_s, speed_bytes_s, timeout_s):
+    def __init__(self, name, level, rate_rq_s, speed_bytes_s, timeout_s, default_anonym_user=False, default_auth_user=False):
         assert name
         assert level
         assert rate_rq_s
@@ -41,6 +78,8 @@ class SLA(domain_object.DomainObject):
         self.rate_rq_s = rate_rq_s
         self.speed_bytes_s = speed_bytes_s
         self.timeout_s = timeout_s
+        self.default_for_anonymous_users = default_anonym_user
+        self.default_for_authenticated_users = default_auth_user
     @classmethod
     def get(cls, **kw):
         '''Finds a single entity in the register.'''

@@ -8,6 +8,8 @@ import ckan.logic as logic
 from ckan.common import _, c, request
 import ckan.lib.helpers as h
 import ckan.lib.dictization as dictization
+from ckan.model.meta import Session
+from sqlalchemy import exc
 
 log = logging.getLogger(__name__)
 
@@ -206,13 +208,28 @@ class SlaController(base.BaseController):
     def add(self):
         self._check_access(c.user)
         data = request.POST
+        log.info('received data sla: %s', data)
         if 'save' in data.keys():
             errors = self._validate_sla_data(data)
             if errors:
                 return base.render('sla/add_sla.html', extra_vars={'data' : data,
                                                                'errors' : errors})
             log.info("creating new sla")
-            self._add_sla(data['name'], data['level'], data['rate_rq_s'], data['speed_bytes_s'], data['timeout_s'])
+            try:
+                self._add_sla(data['name'],
+                              data['level'],
+                              data['rate_rq_s'],
+                              data['speed_bytes_s'],
+                              data['timeout_s'],
+                              data['default_for_anonymous_users'],
+                              data['default_for_authenticated_users'])
+            except exc.IntegrityError as e:
+                log.exception(e)
+                Session.rollback()
+                h.flash_error(_("Integrity error. PLease try again!"))
+                return base.render('sla/add_sla.html', extra_vars={'data' : data,
+                                                               'errors' : None})
+                
             registered_sla = SLA.getAll()
             log.info('registered sla: %s', registered_sla)
             return base.render('sla/edit.html', extra_vars={'registered_sla' : registered_sla})
@@ -231,7 +248,21 @@ class SlaController(base.BaseController):
                     sla_instance = result[0]
                     data  = dictization.table_dictize(sla_instance, context = {'model' : model})
                     return base.render('sla/edit_sla.html', extra_vars={'data' : data, 'errors' : errors })
-            self._edit_sla(data_post['id'], data_post['name'], data_post['level'], data_post['rate_rq_s'], data_post['speed_bytes_s'], data_post['timeout_s'])
+            try:
+                self._edit_sla(data_post['id'],
+                               data_post['name'],
+                               data_post['level'],
+                               data_post['rate_rq_s'],
+                               data_post['speed_bytes_s'],
+                               data_post['timeout_s'],
+                               data_post['default_for_anonymous_users'],
+                               data_post['default_for_authenticated_users'])
+            except exc.IntegrityError as e:
+                log.exception(e)
+                Session.rollback()
+                h.flash_error(_("Integrity error. PLease try again!"))
+                return base.render('sla/edit_sla.html', extra_vars={'data' : data_post,
+                                                               'errors' : None})
             registered_sla = SLA.getAll()
             return base.render('sla/edit.html', extra_vars={'data' : None,
                                                             'registered_sla' : registered_sla})
@@ -267,7 +298,7 @@ class SlaController(base.BaseController):
          
         search = {'level' : data_dict['level']}
         result = SLA.get(**search)
-        if result and data_dict.get('id',None) and result[0].id!=data_dict['id']:
+        if result and (not data_dict.get('id',None) or (data_dict.get('id',None) and result[0].id!=data_dict['id'])):
             errors['level'] = ('SLA with this level already exists. Please change the value.',)
         
         try:
@@ -284,16 +315,40 @@ class SlaController(base.BaseController):
             val = int(data_dict['timeout_s'])
         except ValueError:
             errors['timeout_s'] = ('This attribute has to be an integer. Please enter a valid value.',)
-            
+        
+        try:
+            log.info('validation anon user')
+            val = bool(data_dict.get('default_for_anonymous_users', False))
+            data_dict['default_for_anonymous_users'] = val
+            search = {'default_for_anonymous_users' : True}
+            result = SLA.get(**search)
+            log.info('search result: %s', result)
+            if result and ((not data_dict.get('id',None) and val) or (data_dict.get('id',None) and result[0].id!=data_dict['id'] and val)):
+                errors['default_for_anonymous_users'] = ('There is already default SLA for anonymous users. It is not possible to have more than 1 default SLA.',)
+        except ValueError:
+            errors['default_for_anonymous_users'] = ('This attribute has to be an boolean. Please enter a valid value.',)
+        
+        try:
+            log.info('validation auth user')
+            val = bool(data_dict.get('default_for_authenticated_users', False))
+            data_dict['default_for_authenticated_users'] = val
+            search = {'default_for_authenticated_users' : True}
+            result = SLA.get(**search)
+            log.info('search result: %s', result)
+            if result and ((not data_dict.get('id',None) and val) or (data_dict.get('id',None) and result[0].id!=data_dict['id'] and val)):
+                errors['default_for_authenticated_users'] = ('There is already default SLA for authenticated users. It is not possible to have more than 1 default SLA.',)
+        except ValueError:
+            errors['default_for_authenticated_users'] = ('This attribute has to be an boolean. Please enter a valid value.',)
+        
         return errors
 
             
-    def _add_sla(self, name, number, rqs, mbs, priority):
-        new_sla = SLA(name, number, rqs, mbs, priority)
+    def _add_sla(self, name, number, rqs, mbs, priority, default_anon_user, default_auth_user):
+        new_sla = SLA(name, number, rqs, mbs, priority, default_anon_user, default_auth_user)
         new_sla.save()
         h.flash_success(_("New SLA was registered"))
     
-    def _edit_sla(self, id, new_name, new_level, new_rqs, new_bytes, new_timeout):
+    def _edit_sla(self, id, new_name, new_level, new_rqs, new_bytes, new_timeout, new_default_anon_user, new_default_auth_user):
         search = {'id' : id}
         result = SLA.get(**search)
         if len(result)==1:
@@ -303,6 +358,8 @@ class SlaController(base.BaseController):
             updated_sla.rate_rq_s = new_rqs
             updated_sla.speed_bytes_s = new_bytes
             updated_sla.timeout_s = new_timeout
+            updated_sla.default_for_anonymous_users = new_default_anon_user
+            updated_sla.default_for_authenticated_users = new_default_auth_user
             updated_sla.save()
             h.flash_success(_("SLA was updated"))
         else:
