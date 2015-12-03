@@ -30,20 +30,20 @@
 		<td>{{sla.timeout_s}}</td>
 		<td>{{ h.nav_link(_('Edit'), controller='ckanext.sla.sla:SlaController', action='edit', id=sla.id, class_='btn') }}
 		{% if sla.default_for_authenticated_users%}
-		<span class="control-required" title="{{_('default SLA for authenticated user')}}">P</span>
+		<span class="label label-info" title="{{_('default SLA for authenticated user')}}">P</span>
 		{% endif %}
 		{% if sla.default_for_anonymous_users%}
-		<span class="control-required" title="{{_('default SLA for anonymous user')}}">N</span>
+		<span class="label label-info" title="{{_('default SLA for anonymous user')}}">N</span>
 		{% endif %}
 		</tr>
 {% endfor %}
  </tbody>
 </table>
 <p class="control-required-message">
-    <span class="control-required">P</span> - {{_('default SLA for authenticated user')}}
+    <span class="label label-info">P</span> - {{_('default SLA for authenticated user')}}
 </p>
 <p class="control-required-message">
-    <span class="control-required">N</span> - {{_('default SLA for anonymous user')}}
+    <span class="label label-info">N</span> - {{_('default SLA for anonymous user')}}
 </p>
 <p>
 {{ h.nav_link(_('Register new SLA'), controller='ckanext.sla.sla:SlaController', action='add', class_='mybutton') }}
