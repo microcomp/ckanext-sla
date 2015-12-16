@@ -3,7 +3,6 @@ from sla_db import SLA, SLA_Mapping, sla_mapping_table, sla_table
 import ckan.lib.base as base
 import ckan.plugins.toolkit as tk
 import ckan.model as model
-from hurry.filesize import size
 import ckan.logic as logic
 from ckan.common import _, c, request
 import ckan.lib.helpers as h
