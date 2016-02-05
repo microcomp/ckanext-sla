@@ -18,7 +18,7 @@
     <tbody>
     {% for res in results %}
             <tr>
-            <td><h3 style="border-top: 0px; margin-top: 0px;"><a href="{{ h.url_for(controller='user', action='read', id=res['user_id']) }}">{{ res['user_name'] }}</a></h3></td>
+            <td><!--h3 style="border-top: 0px; margin-top: 0px;"!--><a href="{{ h.url_for(controller='user', action='read', id=res['user_id']) }}">{{ res['user_name'] }}</a><!--/h3!--></td>
             <td><a href="{{ h.url_for(controller='ckanext.sla.sla:SlaController', action='sla_detail', id=res['sla_id'])}}">{{ res['sla_name'] }}</a></td>
             <td><a href="{{ h.url_for(controller='ckanext.sla.sla:SlaController', action='map_user_sla', sla_id=res['sla_id'], user_id=res['user_id'])}}">{{ _('Edit')}}</a></td>
             </tr>

@@ -84,8 +84,9 @@ class SlaController(base.BaseController):
         for entry in entries:
             user = entry[0]
             sla = entry[1]
+            n = "{} ({})".format(user.fullname, user.name)
             data_dict = {'user_id' : user.id,
-                         'user_name' : user.name,
+                         'user_name' : n,
                          'sla_id' : sla.id,
                          'sla_name' : sla.name}
             table_results.append(data_dict)
@@ -116,7 +117,8 @@ class SlaController(base.BaseController):
                 users_var = []
                 users_var.append(not_defined)
                 for user in users:
-                    users_var.append({'value' : user['id'], 'text' : user['name']})
+                    n = "{} ({})".format(user['fullname'], user['name'])
+                    users_var.append({'value' : user['id'], 'text' : n})
                 registered_sla = SLA.getAll()
                 sla_var = []
                 sla_var.append(not_defined)
@@ -140,7 +142,8 @@ class SlaController(base.BaseController):
             users_var = []
             users_var.append(not_defined)
             for user in users:
-                users_var.append({'value' : user['id'], 'text' : user['name']})
+                n = "{} ({})".format(user['fullname'], user['name'])
+                users_var.append({'value' : user['id'], 'text' : n})
         registered_sla = SLA.getAll()
         sla_var = []
         sla_var.append(not_defined)
